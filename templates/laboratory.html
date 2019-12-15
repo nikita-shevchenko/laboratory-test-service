@@ -1,0 +1,47 @@
+{% extends 'template.html' %}
+{% block title %}Laboratory{% endblock %}
+{% block content %}
+    <h3>Laboratory list</h3>
+    {% for lab in laboratory %}
+    <form action="{{ url_for('laboratory') }}" method="post">
+    {{form.hidden_tag()}}
+    <div class="row pb-3">
+      <div class="col">
+        {{ form.number(class_="form-control", value=lab[0], readonly=True) }}
+      </div>
+      <div class="col">
+        {{ form.variant(class_="form-control", value=lab[1], readonly=True) }}
+      </div>
+      <div class="col">
+        {{ form.task(class_="form-control", value=lab[2]) }}
+      </div>
+      <div class="col text-center">
+        {{ form.delete(class_="form-check-input") }}Delete?
+      </div>
+      <div class="col">
+        <input type="submit" value="Save" class="btn btn-success">
+      </div>
+    </div>
+    </form>
+    {% endfor %}
+    <form action="{{ url_for('laboratory') }}" method="post" name="create">
+        {{form.hidden_tag()}}
+        <div class="row pb-3">
+            <div class="col">
+                {{ form.number(class_="form-control", value='', placeholder='New lab number') }}
+            </div>
+            <div class="col">
+                {{ form.variant(class_="form-control", value='', placeholder='New lab variant') }}
+            </div>
+            <div class="col">
+                {{ form.task(class_="form-control", value='', placeholder='New lab content') }}
+            </div>
+            <div class="col">
+
+            </div>
+            <div class="col">
+                <input type="submit" value="Create" class="btn btn-success">
+            </div>
+        </div>
+    </form>
+{% endblock %}

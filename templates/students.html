@@ -1,0 +1,53 @@
+{% extends 'template.html' %}
+{% block title %}Student{% endblock %}
+{% block content %}
+    <h3>Student list</h3>
+    {% for student in students %}
+    <form action="{{ url_for('students') }}" method="post" name="edit-{{ student[0] }}">
+    {{form.hidden_tag()}}
+    <div class="row pb-3">
+      <div class="col">
+        {{ form.record_book(class_="form-control", value=student[0], readonly=True) }}
+      </div>
+      <div class="col">
+        {{ form.full_name(class_="form-control", value=student[1]) }}
+      </div>
+      <div class="col">
+        {{ form.email(class_="form-control", value=student[2]) }}
+      </div>
+      <div class="col">
+        {{ form.phone(class_="form-control", value=student[3]) }}
+      </div>
+      <div class="col text-center">
+        {{ form.delete(class_="form-check-input") }}Delete?
+      </div>
+      <div class="col">
+        <input type="submit" value="Save" class="btn btn-success">
+      </div>
+    </div>
+    </form>
+    {% endfor %}
+    <form action="{{ url_for('students') }}" method="post" name="create">
+        {{form.hidden_tag()}}
+        <div class="row pb-3">
+            <div class="col">
+                {{ form.record_book(class_="form-control", value='', placeholder='New user record book number') }}
+            </div>
+            <div class="col">
+                {{ form.full_name(class_="form-control", value='', placeholder='New user full name') }}
+            </div>
+            <div class="col">
+                {{ form.email(class_="form-control", value='', placeholder='New user email') }}
+            </div>
+            <div class="col">
+                {{ form.phone(class_="form-control", value='', placeholder='New user phone') }}
+            </div>
+            <div class="col">
+
+            </div>
+            <div class="col">
+                <input type="submit" value="Create" class="btn btn-success">
+            </div>
+        </div>
+    </form>
+{% endblock %}
