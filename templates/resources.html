@@ -2,21 +2,31 @@
 {% block title %}Resources{% endblock %}
 {% block content %}
     <h3>Resource list</h3>
+    <div class="row pb-3">
+        {% for headline in headlines %}
+          <div class="col">
+          {{ headline }}
+          </div>
+        {% endfor %}
+    </div>
     {% for resource in resources %}
     <form action="{{ url_for('resources') }}" method="post">
     {{form.hidden_tag()}}
     <div class="row pb-3">
       <div class="col">
-        {{ form.resource_name(class_="form-control", value=resource[0], readonly=True) }}
+        {{ form.resource_name(class_="form-control", value=resource.resource_name, readonly=True) }}
       </div>
       <div class="col">
-        {{ form.label(class_="form-control", value=resource[1]) }}
+        {{ form.resource_source(class_="form-control", value=resource.resource_source) }}
       </div>
       <div class="col">
-        {{ form.content(class_="form-control", value=resource[2]) }}
+        {{ form.label_number(class_="form-control", value=resource.label_number) }}
       </div>
       <div class="col">
-        {{ form.rating(class_="form-control", value=resource[3]) }}
+        {{ form.resource_content(class_="form-control", value=resource.resource_content) }}
+      </div>
+      <div class="col">
+        {{ form.rating(class_="form-control", value=resource.rating) }}
       </div>
       <div class="col text-center">
         {{ form.delete(class_="form-check-input") }}Delete?
@@ -34,10 +44,13 @@
                 {{ form.resource_name(class_="form-control", value='', placeholder='New resource name') }}
             </div>
             <div class="col">
-                {{ form.label(class_="form-control", value='', placeholder='New resource label') }}
+                {{ form.resource_source(class_="form-control", value='', placeholder='New resource source') }}
             </div>
             <div class="col">
-                {{ form.content(class_="form-control", value='', placeholder='New resource content') }}
+                {{ form.label_number(class_="form-control", value='', placeholder='New resource label number') }}
+            </div>
+            <div class="col">
+                {{ form.resource_content(class_="form-control", value='', placeholder='New resource content') }}
             </div>
             <div class="col">
                 {{ form.rating(class_="form-control", value='', placeholder='New resource rating') }}

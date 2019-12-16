@@ -2,21 +2,34 @@
 {% block title %}Student{% endblock %}
 {% block content %}
     <h3>Student list</h3>
+    <div class="row pb-3">
+        {% for headline in headlines %}
+          <div class="col">
+          {{ headline }}
+          </div>
+        {% endfor %}
+    </div>
     {% for student in students %}
-    <form action="{{ url_for('students') }}" method="post" name="edit-{{ student[0] }}">
+    <form action="{{ url_for('students') }}" method="post">
     {{form.hidden_tag()}}
     <div class="row pb-3">
       <div class="col">
-        {{ form.record_book(class_="form-control", value=student[0], readonly=True) }}
+        {{ form.record_book(class_="form-control", value=student.record_book, readonly=True) }}
       </div>
       <div class="col">
-        {{ form.full_name(class_="form-control", value=student[1]) }}
+        {{ form.group_year(class_="form-control", value=student.group_year) }}
       </div>
       <div class="col">
-        {{ form.email(class_="form-control", value=student[2]) }}
+        {{ form.group_name(class_="form-control", value=student.group_name) }}
       </div>
       <div class="col">
-        {{ form.phone(class_="form-control", value=student[3]) }}
+        {{ form.student_name(class_="form-control", value=student.student_name) }}
+      </div>
+      <div class="col">
+        {{ form.student_email(class_="form-control", value=student.student_email) }}
+      </div>
+      <div class="col">
+        {{ form.student_phone(class_="form-control", value=student.student_phone) }}
       </div>
       <div class="col text-center">
         {{ form.delete(class_="form-check-input") }}Delete?
@@ -34,13 +47,19 @@
                 {{ form.record_book(class_="form-control", value='', placeholder='New user record book number') }}
             </div>
             <div class="col">
-                {{ form.full_name(class_="form-control", value='', placeholder='New user full name') }}
+                {{ form.group_year(class_="form-control", value='', placeholder='New user group_year') }}
             </div>
             <div class="col">
-                {{ form.email(class_="form-control", value='', placeholder='New user email') }}
+                {{ form.group_name(class_="form-control", value='', placeholder='New user group_name') }}
             </div>
             <div class="col">
-                {{ form.phone(class_="form-control", value='', placeholder='New user phone') }}
+                {{ form.student_name(class_="form-control", value='', placeholder='New user student_name') }}
+            </div>
+            <div class="col">
+                {{ form.student_email(class_="form-control", value='', placeholder='New user student_email') }}
+            </div>
+            <div class="col">
+                {{ form.student_phone(class_="form-control", value='', placeholder='New user student_phone') }}
             </div>
             <div class="col">
 

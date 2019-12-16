@@ -2,18 +2,28 @@
 {% block title %}Laboratory{% endblock %}
 {% block content %}
     <h3>Laboratory list</h3>
+    <div class="row pb-3">
+        {% for headline in headlines %}
+          <div class="col">
+          {{ headline }}
+          </div>
+        {% endfor %}
+    </div>
     {% for lab in laboratory %}
     <form action="{{ url_for('laboratory') }}" method="post">
     {{form.hidden_tag()}}
     <div class="row pb-3">
       <div class="col">
-        {{ form.number(class_="form-control", value=lab[0], readonly=True) }}
+        {{ form.laboratory_theme(class_="form-control", value=lab.laboratory_theme, readonly=True) }}
       </div>
       <div class="col">
-        {{ form.variant(class_="form-control", value=lab[1], readonly=True) }}
+        {{ form.subject_name(class_="form-control", value=lab.subject_name, readonly=True) }}
       </div>
       <div class="col">
-        {{ form.task(class_="form-control", value=lab[2]) }}
+        {{ form.laboratory_goal(class_="form-control", value=lab.laboratory_goal) }}
+      </div>
+      <div class="col">
+        {{ form.laboratory_number(class_="form-control", value=lab.laboratory_number) }}
       </div>
       <div class="col text-center">
         {{ form.delete(class_="form-check-input") }}Delete?
@@ -28,13 +38,16 @@
         {{form.hidden_tag()}}
         <div class="row pb-3">
             <div class="col">
-                {{ form.number(class_="form-control", value='', placeholder='New lab number') }}
+                {{ form.laboratory_theme(class_="form-control", value='', placeholder='New laboratory_theme') }}
             </div>
             <div class="col">
-                {{ form.variant(class_="form-control", value='', placeholder='New lab variant') }}
+                {{ form.subject_name(class_="form-control", value='', placeholder='New subject_name') }}
             </div>
             <div class="col">
-                {{ form.task(class_="form-control", value='', placeholder='New lab content') }}
+                {{ form.laboratory_goal(class_="form-control", value='', placeholder='New laboratory_goal') }}
+            </div>
+            <div class="col">
+                {{ form.laboratory_number(class_="form-control", value='', placeholder='New laboratory_number') }}
             </div>
             <div class="col">
 
