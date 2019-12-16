@@ -1,23 +1,25 @@
 from flask import render_template, Flask
 from forms import StudentEditForm, ResourceEditForm, LaboratoryEditForm
-from models import app
-from commands import create_tables, populate
+from db import db
+from commands import create_tables, populate_tables
+import os
 
+app = Flask(__name__)
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:3044344@127.0.0.1:5432/test'
 app.config['SECRET_KEY'] = 'Thisisasecret'
+
+db.init_app(app)
+
 app.cli.add_command(create_tables)
-app.cli.add_command(populate)
+app.cli.add_command(populate_tables)
 
 
 @app.route('/')
 def hello_world():
     return render_template('main.html')
 
-#
-# @app.route('/student/delete', methods=['POST'])
-# def delete_student():
-#     pass
-#
-#
+
 # @app.route('/students', methods=['GET', 'POST'])
 # def students():
 #     form = StudentEditForm()

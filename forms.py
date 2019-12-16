@@ -5,9 +5,10 @@ from wtforms.validators import Email, regexp
 
 class StudentEditForm(FlaskForm):
     record_book = StringField('record_book')
-    full_name = StringField('full_name')
-    email = StringField('email', validators=[Email()])
-    phone = StringField('phone')
+    full_name = StringField('student_name')
+    group_name = StringField('group_name')
+    email = StringField('student_email', validators=[Email()])
+    phone = StringField('student_phone')
     delete = BooleanField('delete', default=False)
 
 

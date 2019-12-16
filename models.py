@@ -1,11 +1,4 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-import os
-
-app = Flask(__name__)
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:3044344@127.0.0.1:5432/test'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-db = SQLAlchemy(app)
+from db import db
 
 groups_have_subjects_table = db.Table('groups_have_subjects',
                                       db.Column('subject_name', db.String(100),
@@ -174,7 +167,3 @@ class Resource(db.Model):
         self.resource_source = resource_source
         self.label_number = label_number
         self.rating = rating
-
-
-def init_db():
-    db.create_all()

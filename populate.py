@@ -1,8 +1,8 @@
-from models import db, Student, Group, Task, Material, Resource, Label, Test, Implementation, Subject, Laboratory
+from models import Student, Group, Task, Material, Resource, Label, Test, Implementation, Subject, Laboratory
+from db import db
 
 
 def populate():
-    print('called!')
     km62 = Group('KM-62', 2016)
     km61 = Group('KM-61', 2016)
     km63 = Group('KM-63', 2016)
