@@ -1,115 +1,116 @@
-from db import Base
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, Table
-from sqlalchemy.orm import relationship
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
-groups_have_subjects_table = Table('groups_have_subjects', Base.metadata,
-                                   Column('subject_name', String(100), ForeignKey('subject.subject_name')),
-                                   Column('group_name', String(10), ForeignKey('group.group_name')),
-                                   Column('group_year', Integer, ForeignKey('group.group_year'))
-                                   )
-laboratory_have_tests_table = Table('laboratory_have_tests', Base.metadata,
-                                    Column('test_name', String(500), ForeignKey('test.test_name')),
-                                    Column('laboratory_theme', String(500), ForeignKey('laboratory.laboratory_theme'))
-                                    )
-subjects_have_materials_table = Table('subjects_have_materials', Base.metadata,
-                                      Column('subject_name', String(100), ForeignKey('subject.subject_name')),
-                                      Column('material_name', String(500), ForeignKey('material.material_name')),
-                                      Column('material_author', String(500), ForeignKey('material.material_author'))
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:3044344@127.0.0.1:5432/test'
+db = SQLAlchemy(app)
+
+groups_have_subjects_table = db.Table('groups_have_subjects',
+                                      db.Column('subject_name', db.String(100),
+                                                db.ForeignKey('subject.subject_name'), primary_key=True),
+                                      db.Column('group_name', db.String(10), primary_key=True),
+                                      db.Column('group_year', db.Integer, primary_key=True),
+                                      db.ForeignKeyConstraint(('group_name', 'group_year'),
+                                                              ('group.group_name', 'group.group_year'))
                                       )
+laboratory_have_tests_table = db.Table('laboratory_have_tests',
+                                       db.Column('test_name', db.String(500),
+                                                 db.ForeignKey('test.test_name'), primary_key=True),
+                                       db.Column('laboratory_theme', db.String(500),
+                                                 db.ForeignKey('laboratory.laboratory_theme'), primary_key=True)
+                                       )
+subjects_have_materials_table = db.Table('subjects_have_materials',
+                                         db.Column('subject_name', db.String(100),
+                                                   db.ForeignKey('subject.subject_name'), primary_key=True),
+                                         db.Column('material_name', db.String(500), primary_key=True),
+                                         db.Column('material_author', db.String(500), primary_key=True),
+                                         db.ForeignKeyConstraint(('material_name', 'material_author'),
+                                                                 ('material.material_name', 'material.material_author'))
+                                         )
 
 
-class Student(Base):
-    __tablename__ = 'student'
-    record_book = Column(String(6), primary_key=True)
-    group_year = Column(Integer, ForeignKey('group.group_year'), primary_key=True)
-    group_name = Column(String(10), ForeignKey('group.group_name'), nullable=False)
-    student_name = Column(String(500), nullable=False)
-    student_email = Column(String(200), nullable=False)
-    student_phone = Column(String(50), nullable=True)
-    group = relationship('Group', back_populates='students')
-    implementations = relationship('Implementation', back_populates='student')
+class Student(db.Model):
+    record_book = db.Column(db.String(6), primary_key=True)
+    group_year = db.Column(db.Integer, primary_key=True)
+    group_name = db.Column(db.String(10), nullable=False)
+    student_name = db.Column(db.String(500), nullable=False)
+    student_email = db.Column(db.String(200), nullable=False)
+    student_phone = db.Column(db.String(50), nullable=True)
+    implementations = db.relationship('Implementation', backref='student')
+    __table_args__ = (db.ForeignKeyConstraint(('group_name', 'group_year'),
+                                              ('group.group_name', 'group.group_year')), {})
 
 
-class Group(Base):
-    __tablename__ = 'group'
-    group_name = Column(String(10), primary_key=True)
-    group_year = Column(Integer, primary_key=True)
-    students = relationship('Student', back_populates='group')
-    subjects = relationship('Subject', secondary=groups_have_subjects_table)
+class Group(db.Model):
+    group_name = db.Column(db.String(10), primary_key=True)
+    group_year = db.Column(db.Integer, primary_key=True)
+    students = db.relationship('Student', backref='group')
+    subjects = db.relationship('Subject', secondary=groups_have_subjects_table)
 
 
-class Subject(Base):
-    __tablename__ = 'subject'
-    subject_name = Column(String(100), primary_key=True)
-    laboratory = relationship('Laboratory', back_populates='subject')
-    materials = relationship('Material', secondary=subjects_have_materials_table)
+class Subject(db.Model):
+    subject_name = db.Column(db.String(100), primary_key=True)
+    laboratory = db.relationship('Laboratory', backref='subject')
+    materials = db.relationship('Material', secondary=subjects_have_materials_table)
 
 
-class Laboratory(Base):
-    __tablename__ = 'laboratory'
-    laboratory_theme = Column(String(500), primary_key=True)
-    subject_name = Column(String(100), ForeignKey('subject.subject_name'), nullable=False)
-    laboratory_goal = Column(String(500), nullable=True)
-    laboratory_number = Column(Integer, nullable=False)
-    subject = relationship('Subject', back_populates='laboratory')
-    tasks = relationship('Task', back_populates='laboratory')
-    implementations = relationship('Implementation', back_populates='laboratory')
-    tests = relationship('Test', secondary=laboratory_have_tests_table)
+class Laboratory(db.Model):
+    laboratory_theme = db.Column(db.String(500), primary_key=True)
+    subject_name = db.Column(db.String(100), db.ForeignKey('subject.subject_name'), nullable=False)
+    laboratory_goal = db.Column(db.String(500), nullable=True)
+    laboratory_number = db.Column(db.Integer, nullable=False)
+    tasks = db.relationship('Task', backref='laboratory')
+    implementations = db.relationship('Implementation', backref='laboratory')
+    tests = db.relationship('Test', secondary=laboratory_have_tests_table)
 
 
-class Task(Base):
-    __tablename__ = 'task'
-    variant = Column(Integer, primary_key=True)
-    laboratory_theme = Column(String(500), ForeignKey('laboratory.laboratory_theme'), primary_key=True)
-    laboratory_task = Column(Text, nullable=False)
-    laboratory = relationship('Laboratory', back_populates='tasks')
+class Task(db.Model):
+    variant = db.Column(db.Integer, primary_key=True)
+    laboratory_theme = db.Column(db.String(500), db.ForeignKey('laboratory.laboratory_theme'), primary_key=True)
+    laboratory_task = db.Column(db.Text, nullable=False)
 
 
-class Implementation(Base):
-    __tablename__ = 'implementation'
-    attempt = Column(Integer, primary_key=True)
-    record_book = Column(String(6), ForeignKey('student.record_book'), primary_key=True)
-    group_year = Column(Integer, ForeignKey('student.group_year'), primary_key=True)
-    laboratory_theme = Column(String(500), ForeignKey('laboratory.laboratory_theme'), primary_key=True)
-    mark = Column(Integer, nullable=True)
-    implementation_content = Column(Text, nullable=False)
-    test_output = Column(Text, nullable=True)
-    operator_sequence = Column(Text, nullable=True)
-    plagiary = Column(Integer, nullable=True)
-    student = relationship('Student', back_populates='implementations')
-    laboratory = relationship('Laboratory', back_populates='implementations')
+class Implementation(db.Model):
+    attempt = db.Column(db.Integer, primary_key=True)
+    record_book = db.Column(db.String(6), primary_key=True)
+    group_year = db.Column(db.Integer, primary_key=True)
+    laboratory_theme = db.Column(db.String(500), db.ForeignKey('laboratory.laboratory_theme'), primary_key=True)
+    mark = db.Column(db.Integer, nullable=True)
+    implementation_content = db.Column(db.Text, nullable=False)
+    test_output = db.Column(db.Text, nullable=True)
+    operator_sequence = db.Column(db.Text, nullable=True)
+    plagiary = db.Column(db.Integer, nullable=True)
+    __table_args__ = (db.ForeignKeyConstraint(('record_book', 'group_year'),
+                                              ('student.record_book', 'student.group_year')), {})
 
 
-class Test(Base):
-    __tablename__ = 'test'
-    test_name = Column(String(500), primary_key=True)
-    input_data = Column(Text, nullable=False)
-    expected_result = Column(Text, nullable=False)
-    output_data = Column(Text, nullable=True)
+class Test(db.Model):
+    test_name = db.Column(db.String(500), primary_key=True)
+    input_data = db.Column(db.Text, nullable=False)
+    expected_result = db.Column(db.Text, nullable=False)
+    output_data = db.Column(db.Text, nullable=True)
 
 
-class Material(Base):
-    __tablename__ = 'material'
-    material_name = Column(String(500), primary_key=True)
-    material_author = Column(String(500), primary_key=True)
-    label_number = Column(Integer, ForeignKey('label.label_number'), nullable=True)
-    material_content = Column(Text, nullable=True)
-    label = relationship('Label', back_populates='materials')
+class Material(db.Model):
+    material_name = db.Column(db.String(500), primary_key=True)
+    material_author = db.Column(db.String(500), primary_key=True)
+    label_number = db.Column(db.Integer, db.ForeignKey('label.label_number'), nullable=True)
+    material_content = db.Column(db.Text, nullable=True)
 
 
-class Label(Base):
-    __tablename__ = 'label'
-    label_number = Column(Integer, primary_key=True)
-    label_name = Column(String(100), nullable=True)
-    materials = relationship('Material', back_populates='label')
-    resources = relationship('Resource', back_populates='label')
+class Label(db.Model):
+    label_number = db.Column(db.Integer, primary_key=True)
+    label_name = db.Column(db.String(100), nullable=True)
+    materials = db.relationship('Material', backref='label')
+    resources = db.relationship('Resource', backref='label')
 
 
-class Resource(Base):
-    __tablename__ = 'resource'
-    resource_name = Column(String(500), primary_key=True)
-    resource_source = Column(String(500), primary_key=True)
-    label_number = Column(Integer, ForeignKey('label.label_number'), nullable=True)
-    resource_content = Column(Text, nullable=True)
-    rating = Column(Integer, nullable=False)
-    label = relationship('Label', back_populates='resources')
+class Resource(db.Model):
+    resource_name = db.Column(db.String(500), primary_key=True)
+    resource_source = db.Column(db.String(500), primary_key=True)
+    label_number = db.Column(db.Integer, db.ForeignKey('label.label_number'), nullable=True)
+    resource_content = db.Column(db.Text, nullable=True)
+    rating = db.Column(db.Integer, nullable=False)
+
+
+db.create_all()
