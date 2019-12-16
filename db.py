@@ -1,7 +1,8 @@
 from sqlalchemy import create_engine
+import os
 
 
-POSTGRES_URL = "127.0.0.1:5432"
+POSTGRES_URL = os.environ.get('DATABASE_URL')
 POSTGRES_USER = "postgres"
 POSTGRES_PW = "3044344"
 POSTGRES_DB = "courses"
