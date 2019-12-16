@@ -40,6 +40,14 @@ class Student(db.Model):
     __table_args__ = (db.ForeignKeyConstraint(('group_name', 'group_year'),
                                               ('group.group_name', 'group.group_year')), {})
 
+    def __init__(self, record_book, group_year, group_name, student_name, student_email, student_phone):
+        self.record_book = record_book
+        self.group_year = group_year
+        self.group_name = group_name
+        self.student_name = student_name
+        self.student_email = student_email
+        self.student_phone = student_phone
+
 
 class Group(db.Model):
     group_name = db.Column(db.String(10), primary_key=True)
@@ -47,11 +55,18 @@ class Group(db.Model):
     students = db.relationship('Student', backref='group')
     subjects = db.relationship('Subject', secondary=groups_have_subjects_table)
 
+    def __init__(self, group_name, group_year):
+        self.group_name = group_name
+        self.group_year = group_year
+
 
 class Subject(db.Model):
     subject_name = db.Column(db.String(100), primary_key=True)
     laboratory = db.relationship('Laboratory', backref='subject')
     materials = db.relationship('Material', secondary=subjects_have_materials_table)
+
+    def __init__(self, subject_name):
+        self.subject_name = subject_name
 
 
 class Laboratory(db.Model):
@@ -63,11 +78,22 @@ class Laboratory(db.Model):
     implementations = db.relationship('Implementation', backref='laboratory')
     tests = db.relationship('Test', secondary=laboratory_have_tests_table)
 
+    def __init__(self, laboratory_theme, subject_name, laboratory_goal, laboratory_number):
+        self.laboratory_theme = laboratory_theme
+        self.subject_name = subject_name
+        self.laboratory_goal = laboratory_goal
+        self.laboratory_number = laboratory_number
+
 
 class Task(db.Model):
     variant = db.Column(db.Integer, primary_key=True)
     laboratory_theme = db.Column(db.String(500), db.ForeignKey('laboratory.laboratory_theme'), primary_key=True)
     laboratory_task = db.Column(db.Text, nullable=False)
+
+    def __init__(self, variant, laboratory_theme, laboratory_task):
+        self.variant = variant
+        self.laboratory_theme = laboratory_theme
+        self.laboratory_task = laboratory_task
 
 
 class Implementation(db.Model):
@@ -83,12 +109,30 @@ class Implementation(db.Model):
     __table_args__ = (db.ForeignKeyConstraint(('record_book', 'group_year'),
                                               ('student.record_book', 'student.group_year')), {})
 
+    def __init__(self, attempt, record_book, group_year, laboratory_theme, mark, implementation_content,
+                 test_output, operator_sequence, plagiary):
+        self.attempt = attempt
+        self.record_book = record_book
+        self.group_year = group_year
+        self.laboratory_theme = laboratory_theme
+        self.mark = mark
+        self.implementation_content = implementation_content
+        self.test_output = test_output
+        self.operator_sequence = operator_sequence
+        self.plagiary = plagiary
+
 
 class Test(db.Model):
     test_name = db.Column(db.String(500), primary_key=True)
     input_data = db.Column(db.Text, nullable=False)
     expected_result = db.Column(db.Text, nullable=False)
     output_data = db.Column(db.Text, nullable=True)
+
+    def __init__(self, test_name, input_data, expected_result, output_data):
+        self.test_name = test_name
+        self.input_data = input_data
+        self.expected_result = expected_result
+        self.output_data = output_data
 
 
 class Material(db.Model):
@@ -97,12 +141,22 @@ class Material(db.Model):
     label_number = db.Column(db.Integer, db.ForeignKey('label.label_number'), nullable=True)
     material_content = db.Column(db.Text, nullable=True)
 
+    def __init__(self, material_name, material_author, label_number, material_content):
+        self.material_name = material_name
+        self.material_author = material_author
+        self.label_number = label_number
+        self.material_content = material_content
+
 
 class Label(db.Model):
     label_number = db.Column(db.Integer, primary_key=True)
     label_name = db.Column(db.String(100), nullable=True)
     materials = db.relationship('Material', backref='label')
     resources = db.relationship('Resource', backref='label')
+
+    def __init__(self, label_number, label_name):
+        self.label_number = label_number
+        self.label_name = label_name
 
 
 class Resource(db.Model):
@@ -112,5 +166,13 @@ class Resource(db.Model):
     resource_content = db.Column(db.Text, nullable=True)
     rating = db.Column(db.Integer, nullable=False)
 
+    def __init__(self, resource_name, resource_source, label_number, resource_content, rating):
+        self.resource_name = resource_name
+        self.resource_content = resource_content
+        self.resource_source = resource_source
+        self.label_number = label_number
+        self.rating = rating
 
-db.create_all()
+
+def init_db():
+    db.create_all()
