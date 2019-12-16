@@ -19,8 +19,8 @@ app.cli.add_command(create_tables)
 app.cli.add_command(populate_tables)
 
 
-@app.route('/dashboard', methods=['GET', 'POST'])
-def dashboard():
+@app.route('/', methods=['GET', 'POST'])
+def hello_world():
     form = AttemptToMarkDep()
     if request.method == 'POST':
         recordbook = form.record_book.data
@@ -43,12 +43,6 @@ def dashboard():
     data_to_plot = [trace]
     graphJSON = json.dumps(data_to_plot, cls=plotly.utils.PlotlyJSONEncoder)
     return render_template('main.html', graphJSON=graphJSON, form=form)
-
-
-@app.route('/')
-def hello_world():
-
-    return render_template('main.html')
 
 
 @app.route('/students', methods=['GET', 'POST'])
