@@ -1,9 +1,11 @@
 from flask import render_template, Flask
 from forms import StudentEditForm, ResourceEditForm, LaboratoryEditForm
-from models import *
-from populate import populate
+from models import app
+from commands import create_tables, populate
 
 app.config['SECRET_KEY'] = 'Thisisasecret'
+app.cli.add_command(create_tables)
+app.cli.add_command(populate)
 
 
 @app.route('/')
