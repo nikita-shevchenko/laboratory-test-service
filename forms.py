@@ -28,3 +28,8 @@ class LaboratoryEditForm(FlaskForm):
     laboratory_goal = StringField('laboratory_goal')
     laboratory_number = IntegerField('laboratory_number')
     delete = BooleanField('delete', default=False)
+
+
+class AttemptToMarkDep(FlaskForm):
+    laboratory_theme = StringField('laboratory_theme')
+    record_book = StringField('record_book')

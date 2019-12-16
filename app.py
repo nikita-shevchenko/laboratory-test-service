@@ -1,13 +1,16 @@
-from flask import render_template, Flask
-from forms import StudentEditForm, ResourceEditForm, LaboratoryEditForm
+from flask import render_template, Flask, request
+from forms import StudentEditForm, ResourceEditForm, LaboratoryEditForm, AttemptToMarkDep
 from models import Test, Implementation, Label, Material, Group, Subject, Task, Resource, Student, Laboratory
 from db import db
 from commands import create_tables, populate_tables
+import plotly
+import plotly.graph_objs as go
+import numpy as np
+import json
 import os
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:3044344@127.0.0.1:5432/test'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SECRET_KEY'] = 'Thisisasecret'
 
 db.init_app(app)
@@ -16,8 +19,35 @@ app.cli.add_command(create_tables)
 app.cli.add_command(populate_tables)
 
 
+@app.route('/dashboard', methods=['GET', 'POST'])
+def dashboard():
+    form = AttemptToMarkDep()
+    if request.method == 'POST':
+        recordbook = form.record_book.data
+        labtheme = form.laboratory_theme.data
+    else:
+        recordbook = 'KM6203'
+        labtheme = 'Integral'
+    print(recordbook)
+    data = Implementation.query\
+        .filter_by(record_book=recordbook, laboratory_theme=labtheme).order_by(Implementation.attempt).all()
+    attempt_list = []
+    mark_list = []
+    for i in range(len(data)):
+        attempt_list.append(data[i].attempt)
+        mark_list.append(data[i].mark)
+    trace = go.Scatter(
+        x=np.array(attempt_list),
+        y=np.array(mark_list)
+    )
+    data_to_plot = [trace]
+    graphJSON = json.dumps(data_to_plot, cls=plotly.utils.PlotlyJSONEncoder)
+    return render_template('main.html', graphJSON=graphJSON, form=form)
+
+
 @app.route('/')
 def hello_world():
+
     return render_template('main.html')
 
 
