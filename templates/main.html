@@ -5,27 +5,10 @@
     <link rel="stylesheet" href="../static/css/bootstrap.min.css">
     <script src="../static/js/bootstrap.min.js"></script>
     <!-- D3.js -->
-    <script src="https://d3js.org/d3.v5.min.js"></script>
-
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <!-- Plotly.js -->
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <title>html file</title>
 </head>
 <body>
 {% include 'navbar.html' %}
-<h3>Dashboard</h3>
-<p>dependence of the mark on the number of attempts</p>
-<form action="{{ url_for('/') }}" method="post">
-    Laboratory theme{{ form.laboratory_theme(placeholder='Integral') }}
-    Student record book {{ form.record_book(placeholder='KM6203') }}
-    <input type="submit" value="Build plot" class="btn btn-success">
-</form>
-<div id="chart" class="chart"></div>
-</body>
-    <script type="text/javascript">
-        var graphs = {{graphJSON | safe}};
-        Plotly.plot('chart', graphs,{});
 
-    </script>
+</body>
 </html>

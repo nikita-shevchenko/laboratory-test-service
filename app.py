@@ -19,8 +19,13 @@ app.cli.add_command(create_tables)
 app.cli.add_command(populate_tables)
 
 
-@app.route('/', methods=['GET', 'POST'])
-def hello_world():
+@app.route('/')
+def main():
+    return render_template('main.html')
+
+
+@app.route('/dashboard', methods=['GET', 'POST'])
+def dashboard():
     form = AttemptToMarkDep()
     if request.method == 'POST':
         recordbook = form.record_book.data
