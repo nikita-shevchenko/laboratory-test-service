@@ -16,7 +16,7 @@
 {% include 'navbar.html' %}
 <h3>Dashboard</h3>
 <p>dependence of the mark on the number of attempts</p>
-<form action="{{ url_for('/dashboard') }}" method="post">
+<form action="{{ url_for('dashboard') }}" method="post">
     Laboratory theme{{ form.laboratory_theme(placeholder='Integral') }}
     Student record book {{ form.record_book(placeholder='KM6203') }}
     <input type="submit" value="Build plot" class="btn btn-success">
