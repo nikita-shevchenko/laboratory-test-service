@@ -47,7 +47,7 @@ def dashboard():
     )
     data_to_plot = [trace]
     graphJSON = json.dumps(data_to_plot, cls=plotly.utils.PlotlyJSONEncoder)
-    return render_template('main.html', graphJSON=graphJSON, form=form)
+    return render_template('dashboard.html', graphJSON=graphJSON, form=form)
 
 
 @app.route('/students', methods=['GET', 'POST'])
