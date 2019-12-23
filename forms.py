@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, IntegerField
-from wtforms.validators import Email, regexp
+from wtforms import StringField, BooleanField, IntegerField, SelectField
+from wtforms.validators import Email, regexp, Length
 
 
 class StudentEditForm(FlaskForm):
@@ -33,3 +33,13 @@ class LaboratoryEditForm(FlaskForm):
 class AttemptToMarkDep(FlaskForm):
     laboratory_theme = StringField('laboratory_theme')
     record_book = StringField('record_book')
+
+class LibraryEditForm(FlaskForm):
+    library_name = StringField('library_name')
+    library_address = StringField('library_address', validators=[Length(0, 10)])
+    record_book = StringField('record_book')
+    group_year = IntegerFields('group_year')
+    library_city = SelectField('library_city', [('Kyiv', 'Kyiv'), ('Lviv', 'Lviv')])
+    library_country = StringField('library_country')
+    delete = BooleanField('delete', default=False)
+
