@@ -96,20 +96,20 @@ def show():
     form = LibraryEditForm()
     if form.validate_on_submit():
         library = Library.query.filter_by(library_name=form.library_name, record_book=form.record_book, group_year=form.group_year).first()
-    if form.delete.data:
-        db.session.delete(library)
-        db.session.commit()
-    elif library is None:
-        new_lib = Library(form.library_name.data, form.library_address.data, form.record_book.data, form.group_year.data, form.library_city.data, form.library_country.data)
-        db.session.add(new_lib)
-        db.session.commit()
-    else:
-        library.library_address = form.library_address.data
-        library.record_book = form.record_book.data
-        library.group_year = form.group_year.data
-        library.library_city = form.library_city.data
-        libarary.library_country = form.library_country.data
-        db.session.commit()
+        if form.delete.data:
+            db.session.delete(library)
+            db.session.commit()
+        elif library is None:
+            new_lib = Library(form.library_name.data, form.library_address.data, form.record_book.data, form.group_year.data, form.library_city.data, form.library_country.data)
+            db.session.add(new_lib)
+            db.session.commit()
+        else:
+            library.library_address = form.library_address.data
+            library.record_book = form.record_book.data
+            library.group_year = form.group_year.data
+            library.library_city = form.library_city.data
+            libarary.library_country = form.library_country.data
+            db.session.commit()
     headlines = ['library_name', 'library_address', 'record_book', 'group_year', 'library_city', 'library_country']
     results = Library.query.all()
     library_list = []
