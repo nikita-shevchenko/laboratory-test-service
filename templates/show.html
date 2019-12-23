@@ -1,0 +1,72 @@
+{% extends 'template.html' %}
+{% block title %}Library{% endblock %}
+{% block content %}
+    <h3>Libraby list</h3>
+    <div class="row pb-3">
+        {% for headline in headlines %}
+          <div class="col">
+          {{ headline }}
+          </div>
+        {% endfor %}
+    </div>
+    {% for lib in library %}
+    <form action="{{ url_for('students') }}" method="post">
+    {{form.hidden_tag()}}
+    <div class="row pb-3">
+      <div class="col">
+        {{ form.library_name(class_="form-control", value=lib.library_name, readonly=True) }}
+      </div>
+      <div class="col">
+        {{ form.library_address(class_="form-control", value=lib.library_address) }}
+      </div>
+      <div class="col">
+        {{ form.record_book(class_="form-control", value=lib.record_book) }}
+      </div>
+      <div class="col">
+        {{ form.group_year(class_="form-control", value=lib.group_year) }}
+      </div>
+      <div class="col">
+        {{ form.library_city(class_="form-control", value=lib.library_city) }}
+      </div>
+      <div class="col">
+        {{ form.library_country(class_="form-control", value=lib.library_country) }}
+      </div>
+      <div class="col text-center">
+        {{ form.delete(class_="form-check-input") }}Delete?
+      </div>
+      <div class="col">
+        <input type="submit" value="Save" class="btn btn-success">
+      </div>
+    </div>
+    </form>
+    {% endfor %}
+    <form action="{{ url_for('students') }}" method="post" name="create">
+        {{form.hidden_tag()}}
+        <div class="row pb-3">
+            <div class="col">
+                {{ form.library_name(class_="form-control", value='', placeholder='New') }}
+            </div>
+            <div class="col">
+                {{ form.library_address(class_="form-control", value='', placeholder='New') }}
+            </div>
+            <div class="col">
+                {{ form.record_book(class_="form-control", value='', placeholder='New') }}
+            </div>
+            <div class="col">
+                {{ form.group_year(class_="form-control", value='', placeholder='New') }}
+            </div>
+            <div class="col">
+                {{ form.library_city(class_="form-control", value='', placeholder='New') }}
+            </div>
+            <div class="col">
+                {{ form.library_country(class_="form-control", value='', placeholder='New') }}
+            </div>
+            <div class="col">
+
+            </div>
+            <div class="col">
+                <input type="submit" value="Create" class="btn btn-success">
+            </div>
+        </div>
+    </form>
+{% endblock %}
