@@ -37,6 +37,8 @@ class AttemptToMarkDep(FlaskForm):
 class LibraryEditForm(FlaskForm):
     library_name = StringField('library_name')
     library_address = StringField('library_address', validators=[Length(0, 10)])
+    record_book = StringField('record_book')
+    group_year = IntegerFields('group_year')
     library_city = SelectField('library_city', [('Kyiv', 'Kyiv'), ('Lviv', 'Lviv')])
     library_country = StringField('library_country')
     delete = BooleanField('delete', default=False)
