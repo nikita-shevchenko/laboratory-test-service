@@ -1,6 +1,6 @@
 from flask import render_template, Flask, request
 from forms import StudentEditForm, ResourceEditForm, LaboratoryEditForm, AttemptToMarkDep
-from models import Test, Implementation, Label, Material, Group, Subject, Task, Resource, Student, Laboratory
+from models import Test, Implementation, Label, Material, Group, Subject, Task, Resource, Student, Laboratory, Library
 from db import db
 from commands import create_tables, populate_tables
 import plotly
@@ -23,6 +23,18 @@ app.cli.add_command(populate_tables)
 def main():
     return render_template('main.html')
 
+
+@app.route('/filllibrary')
+def filllibrary():
+    lib1 = Library('Kyiv library 1', 'gde-to', 'KM6202', 2016, 'Kyiv', 'Ukraine')
+    lib2 = Library('Kyiv library 2', 'gde-to', 'KM6202', 2016, 'Kyiv', 'Ukraine')
+    lib3 = Library('Kyiv library 3', 'gde-to', 'KM6202', 2016, 'Kyiv', 'Ukraine')
+
+    db.session.add(lib1)
+    db.session.add(lib2)
+    db.session.add(lib3)
+
+    db.session.commit()
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
